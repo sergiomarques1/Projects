@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Googol - Indexar URL</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: #4285f4;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .main-content {
+            flex: 1;
+            padding: 40px 0;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .page-title {
+            color: #4285f4;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px 0;
+            background-color: #f1f1f1;
+            text-align: center;
+        }
+        #status-message {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="/">Googol</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/submit">Indexar URL</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/backlinks">Backlinks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/stats">Estatísticas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/hackernews">Hacker News</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/ai">AI</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="main-content container">
+    <div class="form-container">
+        <h1 class="page-title">Submeter URL para Indexação</h1>
+
+        <form action="/submit-url" method="post">
+            <div class="mb-3">
+                <label for="url" class="form-label">URL</label>
+                <input type="url" class="form-control" id="url" name="url" required
+                       placeholder="https://exemplo.com">
+                <div class="form-text">Insira o URL completo, incluindo 'http://' ou 'https://'</div>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Submeter</button>
+            </div>
+        </form>
+
+        <!-- Exibir mensagens de status da operação -->
+        <div id="status-message" th:if="${message}" th:class="${status == 'success' ? 'alert alert-success' : 'alert alert-danger'}" role="alert" th:text="${message}">
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Googol - Motor de Pesquisa | Sistemas Distribuídos</p>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+
+</script>
+</body>
+</html>

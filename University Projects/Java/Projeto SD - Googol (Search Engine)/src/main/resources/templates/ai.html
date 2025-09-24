@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Googol - Análise de IA</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: #4285f4;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .main-content {
+            flex: 1;
+            padding: 40px 0;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .page-title {
+            color: #4285f4;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px 0;
+            background-color: #f1f1f1;
+            text-align: center;
+        }
+        #analysis-result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+        .analysis-loading {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        .option-card {
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .tab-content {
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="/">Googol</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/submit">Indexar URL</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/backlinks">Backlinks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/stats">Estatísticas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/hackernews">Hacker News</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/ai">AI</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="main-content container">
+    <div class="form-container">
+        <h1 class="page-title">Análise de Inteligência Artificial</h1>
+
+        <div class="tab-content" id="aiTabsContent">
+            <!-- Análise de Pesquisa -->
+            <div class="tab-pane fade show active" id="search-analysis" role="tabpanel" aria-labelledby="search-tab">
+                <form id="search-analysis-form">
+                    <div class="mb-3">
+                        <label for="search-query" class="form-label">Pesquisa</label>
+                        <input type="text" class="form-control" id="search-query" name="q" required
+                               placeholder="Digite um termo ou frase para pesquisar">
+                        <div class="form-text">A nossa ferramenta de IA analisará os resultados encontrados para esta pesquisa.</div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Analisar Resultados</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="analysis-loading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="mt-2">Processando sua solicitação...</p>
+        </div>
+
+        <div id="analysis-result">
+            <h3 class="mb-3">Resultado da Análise</h3>
+            <div id="analysis-content"></div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Googol - Motor de Pesquisa | Sistemas Distribuídos</p>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Formulário de análise de pesquisa
+        document.getElementById('search-analysis-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('search-query').value.trim();
+
+            if (!query) return;
+
+            showLoading();
+
+            fetch(`/ai/analysis?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    showResult(data.analysis);
+                })
+                .catch(error => {
+                    hideLoading();
+                    showResult(`Erro ao processar sua solicitação: ${error.message}`);
+                });
+        });
+
+        function showLoading() {
+            document.querySelector('.analysis-loading').style.display = 'block';
+            document.getElementById('analysis-result').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.querySelector('.analysis-loading').style.display = 'none';
+        }
+
+        function showResult(content) {
+            const resultDiv = document.getElementById('analysis-result');
+            document.getElementById('analysis-content').innerHTML = content.replace(/\n/g, '<br>');
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    });
+</script>
+</body>
+</html>

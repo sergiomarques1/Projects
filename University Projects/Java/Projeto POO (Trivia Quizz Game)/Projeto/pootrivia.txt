@@ -1,0 +1,10 @@
+Arte;Quem pintou a MonaLisa?;10;Leonardo da Vinci;[Leonardo da Vinci|Pablo Picasso|Vincent van Gogh|Salvador Dali|Jacques-Louis David]
+Arte;Quem pintou o quadro "A Noite Estrelada"?;10;Vincent van Gogh;[Leonardo da Vinci|Pablo Picasso|Vincent van Gogh|Salvador Dali|Jacques-Louis David]
+Ciencia;Qual dos seguintes animais não é um mamifero?;25;Crocodilo;[Gato|Crocodilo|Baleia|Rato|Porco];[Ornintorrinco|Leão|Ovelha|Macaco|Crocodilo]
+Ciencia;Qual dos seguintes orgãos pertence ao sistema respiratório?;25;Pulmões;[Pulmões|Estomago|Pele|Pancreas|Intestino Delgado];[Coração|Pulmões|Vsicula|Rins|Glândulas Salivartes]
+Desporto;Ski;O ski é um desporto praticado nos Jogos Olimpicos de Verão?;5;[Verdadeiro|Falso];Falso
+Desporto;Ski;O ski é uma modalidade com grande tradição em Portugal?;5;[Verdadeiro|Falso];Falso
+Desporto;Natacao; Michael Phelps foi um consagrado nadador do Reino Unido?;8;[Verdadeiro|Falso];Falso;
+Desporto;Natacao; As piscinas olimpicas têm 50 metros de comprimento?;8;[Verdadeiro|Falso];Verdadeiro
+Desporto;Futebol; Quem é o atual melhor marcador da seleção nacional de Futebol?;20;[Número 10|Número 7|Número 11|Número 20|Número 4];Número 7;[Pepe|Ronaldo|Eusebio|Luis Figo|Nani];Ronaldo
+Desporto;Futebol; Quem é o atual melhor marcador da seleção argentina de Futebol?;20;[Número 10|Número 15|Número 9|Número 17|Número 2];Número 10;[Messi|Maradona|Zanetti|Di Stéfano|Riquelme];Messi

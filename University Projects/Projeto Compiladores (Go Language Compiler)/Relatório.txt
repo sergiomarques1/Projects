@@ -1,0 +1,22 @@
+(i) Gramática Reescrita
+
+	De modo a reescrevermos a gramática em notação EBNF, fornecida no enunciado, para permitir a análise sintática ascendente, procedemos, primeiramente, por copiá-la para o nosso ficheiro yacc. Depois de percebermos que existiam algumas ambiguidades na gramática, introduzimos regras para estabelecer a correta associatividade e precedência dos operadores entre si, listando-os por ordem crescente de precedência e utilizando os comandos de associatividade %left, %right e %nonassoc.
+	É importante, ainda, referir que foram efetuadas alterações a certas regras da gramática e introduzidas novas regras, com o intuito de permitir, de forma recursiva, a repetição de uma determinada produção, como, por exemplo, na declaração de várias variáveis ou na declaração de vários parâmetros de entrada de uma função:
+
+VarDeclaration:	VAR IDENTIFIER VarSpec Type | VAR LPAR IDENTIFIER VarSpec Type SEMICOLON RPAR
+VarSpec: NULL | COMMA IDENTIFIER VarSpec
+
+Parameters: ParamDecl ParamRep
+ParamDecl: IDENTIFIER Type
+ParamRep: NULL | COMMA ParamDecl ParamRep
+
+	Por fim, para detetarmos erros sintáticos, adicionámos à gramática as regras de erro sugeridas no enunciado.
+
+
+(ii) Algoritmos e Estruturas de Dados da AST 
+
+	Depois de validarmos a gramática reescrita, começámos a desenvolver a árvore de sintaxe abstrata, definindo as estruturas de dados a utilizar. Na estrutura node estão guardadas todas as informações de um nó da árvore AST: o campo "category", que guarda a sua categoria (VarDecl, FuncDecl ...); o campo "token", que se destina ao nome do elemento; uma lista "filhos", para guardar os nós filhos de cada nó; e uma lista "irmãos", com os nós irmãos do nó. Estas listas são do tipo "node_list", uma estrutura de dados que contém um nó e uma lista do mesmo tipo com os nós seguintes.    
+	Com as estruturas já definidas, foram desenvolvidas todas as funções necessárias à construção da árvore de sintaxe abstrata. A função "newnode" cria um novo nó do tipo node. As funções "add_filho" e "add_irmao" adicionam um novo nó à lista de filhos e de irmãos de um nó, respetivamente. A função "show" imprime a árvore final, tendo em conta o formato pedido no enunciado. A função "free_arvore" liberta todo o espaço alocado durante a construção da árvore. Por último, foram desenvolvidas duas funções de auxílio, muito importantes para a correta construção da árvore: a função "num filhos", que conta o número de filhos de um nó e é utilizada na regra da gramática "Statement", para perceber se deverá ou não, consoante o número de statements, ser criado um novo "Block"; e, a função "tipo_var", que é utilizada na regra "VarDeclaration" para que, sempre que for declarada uma variável, atribuir, às variáveis declaradas à frente, o mesmo tipo de variável (ex: var x, y, z int).
+	Por último, aplicámos as funções desenvolvidas às regras da gramática, de modo a obter a árvore de sintaxe abstrata desejada.
+
+

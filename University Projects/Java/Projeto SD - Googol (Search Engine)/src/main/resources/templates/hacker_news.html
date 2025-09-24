@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Googol - Hacker News</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: #4285f4;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .main-content {
+            flex: 1;
+            padding: 40px 0;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .page-title {
+            color: #4285f4;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px 0;
+            background-color: #f1f1f1;
+            text-align: center;
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .summary-card {
+            margin-top: 30px;
+        }
+        .summary-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .summary-item {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="/">Googol</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/submit">Indexar URL</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/backlinks">Backlinks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/stats">Estatísticas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/hackernews">Hacker News</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/ai">AI</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="main-content container">
+    <div class="form-container">
+        <h1 class="page-title">Indexação do Hacker News</h1>
+
+        <!-- Mensagem de status/feedback -->
+        <div th:if="${message}" th:class="'alert alert-' + ${status}" role="alert" th:text="${message}"></div>
+
+        <div class="row">
+            <!-- Formulário para indexar top stories -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Indexar Top Stories</div>
+                    <div class="card-body">
+                        <form action="/hackernews/index-top-stories" method="post">
+                            <div class="mb-3">
+                                <label for="topStoriesTerms" class="form-label">Termos de Pesquisa</label>
+                                <input type="text" class="form-control" id="topStoriesTerms" name="searchTerms" required
+                                       placeholder="Ex: java, AI, blockchain">
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Indexar Top Stories</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulário para indexar histórias de usuário -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Indexar Histórias de Usuário</div>
+                    <div class="card-body">
+                        <form action="/hackernews/index-user-stories" method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Nome de Usuário</label>
+                                <input type="text" class="form-control" id="username" name="username" required
+                                       placeholder="Ex: pg">
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Indexar Histórias do Usuário</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Googol - Motor de Pesquisa | Sistemas Distribuídos</p>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

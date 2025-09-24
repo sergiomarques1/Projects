@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Googol - Links da Página</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: #4285f4;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .main-content {
+            flex: 1;
+            padding: 40px 0;
+        }
+        .page-title {
+            color: #4285f4;
+            margin-bottom: 30px;
+        }
+        .url-display {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            word-break: break-all;
+        }
+        .link-list {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        .link-item {
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px 0;
+            background-color: #f1f1f1;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="/">Googol</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/submit">Indexar URL</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/stats">Estatísticas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/hackernews">Hacker News</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/ai">AI</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="main-content container">
+    <h1 class="page-title">Links da Página</h1>
+
+    <p>Esta página mostra todos os links que apontam para o URL selecionado.</p>
+
+    <div th:if="${url != null}" class="url-display">
+        <strong>URL:</strong> <a th:href="${url}" th:text="${url}" target="_blank">URL da página</a>
+    </div>
+
+    <div th:if="${pageLinks != null && !pageLinks.links.empty}">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Links Encontrados (<span th:text="${pageLinks.links.size()}">0</span>)</h3>
+        </div>
+
+        <div class="link-list">
+            <div class="link-item" th:each="link : ${pageLinks.links}">
+                <a th:href="${link}" th:text="${link}" target="_blank">Link</a>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${pageLinks == null || pageLinks.links.empty}" class="alert alert-info">
+        Nenhum link encontrado.
+    </div>
+
+    <div class="mt-4">
+        <a href="javascript:history.back()" class="btn btn-primary">&larr; Voltar</a>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Googol - Motor de Pesquisa | Sistemas Distribuídos</p>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+
+</script>
+</body>
+</html>

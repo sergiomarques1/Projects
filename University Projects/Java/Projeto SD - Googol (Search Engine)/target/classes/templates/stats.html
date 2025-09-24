@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Googol - Estatísticas</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: #4285f4;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .main-content {
+            flex: 1;
+            padding: 40px 0;
+        }
+        .page-title {
+            color: #4285f4;
+            margin-bottom: 30px;
+        }
+        .stats-card {
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            background-color: #4285f4;
+            color: white;
+            border-top-left-radius: 8px !important;
+            border-top-right-radius: 8px !important;
+            font-weight: bold;
+        }
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #444;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px 0;
+            background-color: #f1f1f1;
+            text-align: center;
+        }
+        .search-rank {
+            font-size: 1.2rem;
+            font-weight: bold;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #f1f1f1;
+            margin-right: 10px;
+        }
+        .rank-1, .rank-2, .rank-3 {
+            color: white;
+        }
+        .rank-1 {
+            background-color: #FFD700; /* Gold */
+        }
+        .rank-2 {
+            background-color: #C0C0C0; /* Silver */
+        }
+        .rank-3 {
+            background-color: #CD7F32; /* Bronze */
+        }
+        .barrel-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .barrel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .progress {
+            height: 8px;
+            margin-top: 5px;
+        }
+        .progress-bar {
+            background-color: #4285f4;
+        }
+        .barrel-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="/">Googol</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/submit">Indexar URL</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/backlinks">Backlinks</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/stats">Estatísticas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/hackernews">Hacker News</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/ai">AI</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="main-content container">
+    <h1 class="page-title">Estatísticas do Sistema</h1>
+
+    <div class="row mb-4">
+        <!-- Páginas Indexadas -->
+        <div class="col-md-6">
+            <div class="card stats-card">
+                <div class="card-header">
+                    Páginas Indexadas
+                </div>
+                <div class="card-body text-center">
+                    <div class="card-value" id="totalPages" th:text="${stats?.totalPages ?: 0}">0</div>
+                    <div class="stat-label">Total de páginas no índice</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tempo Médio -->
+        <div class="col-md-6">
+            <div class="card stats-card">
+                <div class="card-header">
+                    Tempo Médio
+                </div>
+                <div class="card-body text-center">
+                    <div class="card-value" id="avgSearchTime" th:text="${stats?.averageSearchTime != null ? stats.averageSearchTime + ' ms' : 'N/A'}">0 ms</div>
+                    <div class="stat-label">Tempo médio de resposta</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top 10 Pesquisas -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card stats-card">
+                <div class="card-header">
+                    Top 10 Pesquisas
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table" id="topSearchesTable">
+                            <thead>
+                            <tr>
+                                <th>Posição</th>
+                                <th>Pesquisa</th>
+                                <th>Contagem</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="search, iterStat : ${stats?.topSearches ?: {}}" th:with="rank=${iterStat.index + 1}">                                <td class="align-middle">
+                                <div th:class="'search-rank ' + (${rank <= 3 ? 'rank-' + rank : ''})">
+                                    <span th:text="${rank}">1</span>
+                                </div>
+                            </td>
+                                <td class="align-middle" th:text="${search.term}">Java</td>
+                                <td class="align-middle" th:text="${search.count}">242</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barrels Ativos com Tamanhos de Índice -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card stats-card">
+                <div class="card-header">
+                    Barrels Ativos
+                </div>
+                <div class="card-body">
+                    <div class="row" id="activeBarrels">
+                        <!-- Os barrels serão adicionados dinamicamente via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card stats-card">
+                <div class="card-header">
+                    Status do Sistema
+                </div>
+                <div class="card-body">
+                    <div class="row" id="systemStatus">
+                        <!-- Os status serão adicionados dinamicamente via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Googol - Motor de Pesquisa | Sistemas Distribuídos</p>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+    // Inicializar WebSockets
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('Iniciando conexão WebSocket...');
+
+        // WebSocket para atualizações em tempo real
+        const socket = new SockJS('/googol-websocket');
+        const stompClient = Stomp.over(socket);
+
+        // Configurar logs para debug
+        stompClient.debug = function(message) {
+            console.log('STOMP: ' + message);
+        };
+
+        stompClient.connect({}, function(frame) {
+            console.log('Conectado: ' + frame);
+
+            // Inscrever-se para atualizações de estatísticas gerais
+            stompClient.subscribe('/topic/stats', function(message) {
+                console.log('Recebido /topic/stats:', message.body);
+                const stats = JSON.parse(message.body);
+                updateGeneralStats(stats);
+            });
+
+            // Inscrever-se para atualizações de barrels
+            stompClient.subscribe('/topic/barrels', function(message) {
+                console.log('Recebido /topic/barrels:', message.body);
+                const barrelStats = JSON.parse(message.body);
+                updateBarrelStats(barrelStats);
+            });
+
+            // Inscrever-se para atualizações do top pesquisas
+            stompClient.subscribe('/topic/top-searches', function(message) {
+                console.log('Recebido /topic/top-searches:', message.body);
+                const searchesData = JSON.parse(message.body);
+                updateTopSearches(searchesData);
+            });
+
+            // Inscrever-se para atualizações de status do sistema
+            stompClient.subscribe('/topic/system-status', function(message) {
+                console.log('Recebido /topic/system-status:', message.body);
+                const statusData = JSON.parse(message.body);
+                updateSystemStatus(statusData);
+            });
+
+            // Solicitar uma atualização imediata das estatísticas ao carregar a página
+            console.log('Solicitando atualização de estatísticas...');
+            stompClient.send("/app/request-stats-update", {}, JSON.stringify({}));
+        }, function(error) {
+            // Callback de erro
+            console.error('Erro na conexão STOMP:', error);
+
+            // Tentar reconectar após 5 segundos
+            setTimeout(function() {
+                console.log('Tentando reconectar...');
+                stompClient.connect();
+            }, 5000);
+        });
+
+        // Funções de atualização dos elementos da página
+        function updateGeneralStats(stats) {
+            console.log('Atualizando estatísticas gerais:', stats);
+            if (stats.totalPages !== undefined) {
+                document.getElementById('totalPages').textContent = stats.totalPages;
+            }
+            if (stats.averageSearchTime !== undefined) {
+                document.getElementById('avgSearchTime').textContent = stats.averageSearchTime + ' ms';
+            }
+        }
+
+        function updateBarrelStats(barrels) {
+            console.log('Atualizando estatísticas de barrels:', barrels);
+            if (!barrels || !barrels.length) return;
+
+            const barrelsContainer = document.getElementById('activeBarrels');
+            // Limpar barrels existentes
+            barrelsContainer.innerHTML = '';
+
+            // Adicionar novos barrels
+            barrels.forEach(barrel => {
+                const barrelEl = document.createElement('div');
+                barrelEl.className = 'col-md-6';
+                barrelEl.innerHTML = `
+                    <div class="barrel-status mb-4">
+                        <div class="barrel-indicator" style="background-color: ${barrel.active ? '#28a745' : '#dc3545'};"></div>
+                        <div class="flex-grow-1 w-100">
+                            <div class="d-flex justify-content-between">
+                                <strong>${barrel.id}</strong>
+                                <span>${barrel.size} páginas</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <small>Tempo médio: ${barrel.tempoResposta.toFixed(2)} ms</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                barrelsContainer.appendChild(barrelEl);
+            });
+        }
+
+        function updateTopSearches(searches) {
+            console.log('Atualizando top pesquisas:', searches);
+            if (!searches || !searches.length) return;
+
+            const tableBody = document.querySelector('#topSearchesTable tbody');
+            // Limpar linhas existentes
+            tableBody.innerHTML = '';
+
+            // Adicionar novas linhas
+            searches.forEach((search, index) => {
+                const rank = index + 1;
+                const rankClass = rank <= 3 ? `rank-${rank}` : '';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="align-middle">
+                        <div class="search-rank ${rankClass}">
+                            <span>${rank}</span>
+                        </div>
+                    </td>
+                    <td class="align-middle">${search.term}</td>
+                    <td class="align-middle">${search.count}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function updateSystemStatus(status) {
+            console.log('Atualizando status do sistema:', status);
+            const statusContainer = document.getElementById('systemStatus');
+            statusContainer.innerHTML = '';
+
+            // Componentes do sistema para verificar
+            const components = [
+                { id: 'downloaderActive', name: 'Downloader' },
+                { id: 'barrelActive', name: 'Barrel' },
+                { id: 'gatewayActive', name: 'Gateway' },
+                { id: 'springBootActive', name: 'SpringBoot' }
+            ];
+
+            components.forEach(component => {
+                const isActive = status[component.id] === true;
+                const statusDiv = document.createElement('div');
+                statusDiv.className = 'col-md-3';
+                statusDiv.innerHTML = `
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="status-indicator me-2"
+                             style="background-color: ${isActive ? '#28a745' : '#dc3545'};"></div>
+                        <div>
+                            <div>${component.name}</div>
+                            <small class="text-muted">${isActive ? 'Ativo' : 'Inativo'}</small>
+                        </div>
+                    </div>
+                `;
+                statusContainer.appendChild(statusDiv);
+            });
+        }
+    });
+</script>
+</body>
+</html>

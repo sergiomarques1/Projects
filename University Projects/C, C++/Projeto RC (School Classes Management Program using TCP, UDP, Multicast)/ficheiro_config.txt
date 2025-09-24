@@ -1,0 +1,6 @@
+goncalo;345;aluno
+joao;321;professor
+joaquim;456;professor
+sergio;123;aluno
+ze;a123;administrador
+ronaldo;345;aluno

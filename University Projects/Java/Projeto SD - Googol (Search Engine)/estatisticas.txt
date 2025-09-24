@@ -1,0 +1,17 @@
+===== ESTATÍSTICAS DO GOOGOL =====
+Data de Gravação: 2025/05/16 23:07:57
+
+--- PESQUISAS FREQUENTES ---
+"benfica": 6 pesquisas
+"dei": 1 pesquisas
+"curabitur": 14 pesquisas
+
+--- TEMPOS DE RESPOSTA POR PESQUISA (ms) ---
+"benfica": tempo total 10785 ms, média 1797,50 ms
+"dei": tempo total 12 ms, média 12,00 ms
+"curabitur": tempo total 579 ms, média 41,36 ms
+
+--- ESTATÍSTICAS POR BARREL ---
+Barrel BARREL: 21 pesquisas processadas
+Tempo médio de resposta: 295,14 ms (2,95 décimos de segundo)
+
